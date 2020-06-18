@@ -4,7 +4,7 @@
  * @Author: Mr.What
  * @Date: 2020-06-18 19:50:45
  * @LastEditors: Mr.What
- * @LastEditTime: 2020-06-18 21:06:37
+ * @LastEditTime: 2020-06-18 21:48:45
  */ 
 import * as THREE from 'three' // threejs主体框架
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls'
@@ -24,10 +24,25 @@ class TJPlayer {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       logarithmicDepthBuffer: true,
-      alpha: true // 允许背景透明
+      // alpha: true // 允许背景透明
     })
+    this.clock = new THREE.Clock()
+    this.animate = () => {
+      performance.now()
+      this.cameraControls.update(this.clock.getDelta())
+      this.renderer.render(this.scene, this.camera)
+    }
   }
   init () {
+    let loaderGltf = new GLTFLoader()
+    loaderGltf.load('model/puma/scene.gltf', data => {
+      this.scene.add(data.scene)
+    })
+    this.renderer.setAnimationLoop(this.animate)
+    this.domElement.appendChild(this.renderer.domElement)
+    var d_light = new THREE.DirectionalLight('#797979')
+    d_light.position.set(5, 10, 7)
+    this.scene.add(d_light)
   }
 }
 export default TJPlayer
